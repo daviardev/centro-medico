@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Médico</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: #0f0f23;
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            padding: 32px 48px;
+            box-shadow: 0 4px 24px rgba(139, 92, 246, 0.3);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: white;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 500;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 48px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .step-indicator {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+
+        .card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-label {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #2d2d44;
+            border-radius: 14px;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            background: #0f0f23;
+            color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: #1a1a2e;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+        }
+
+        .input-field::placeholder {
+            color: #475569;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(139, 92, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            padding: 32px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-value {
+            font-size: 56px;
+            font-weight: 800;
+            color: white;
+            position: relative;
+            z-index: 1;
+            line-height: 1;
+        }
+
+        .patients-section {
+            margin-top: 32px;
+        }
+
+        .patients-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 12px;
+        }
+
+        .patients-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .patients-list::-webkit-scrollbar-track {
+            background: #1a1a2e;
+            border-radius: 10px;
+        }
+
+        .patients-list::-webkit-scrollbar-thumb {
+            background: #8b5cf6;
+            border-radius: 10px;
+        }
+
+        .patient-card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .patient-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+            transform: translateX(4px);
+        }
+
+        .patient-info {
+            flex: 1;
+        }
+
+        .patient-id {
+            color: #f1f5f9;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .patient-readings {
+            color: #94a3b8;
+            font-size: 15px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .patient-message {
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .badge {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-hipotension { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+        .badge-normal { background: linear-gradient(135deg, #10b981, #059669); }
+        .badge-pre-hta { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .badge-hta { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .alert {
+            padding: 18px 24px;
+            margin-bottom: 24px;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: #f59e0b;
+        }
+
+        .alert-info {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: #3b82f6;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: #ef4444;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .result-card {
+            background: #1a1a2e;
+            border: 1px solid #2d2d44;
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .result-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+        }
+
+        .result-label {
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .result-value {
+            color: #8b5cf6;
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: #475569;
+        }
+
+        .empty-icon {
+            font-size: 72px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .empty-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header, .main-content { padding: 24px; }
+            .header h1 { font-size: 24px; }
+            .card { padding: 24px; }
+            .input-grid { grid-template-columns: 1fr; }
+            .stats-container { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            .btn { min-width: auto; width: 100%; }
+            .patient-card { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .stat-value { font-size: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <div class="header-content">
+                <h1>💊 Sistema de Gestión de Medicamentos</h1>
+                <p>Ministerio de Salud - Control de Presión Arterial</p>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- INVENTARIO INICIAL -->
+            <div class="section" id="inventorySection">
+                <div class="section-header">
+                    <span class="step-indicator">1</span>
+                    <span class="section-title">Configuración de Inventario</span>
+                </div>
+                <div class="card">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label class="input-label">💜 Medicamento 1 - Hipertensión</label>
+                            <input type="number" id="med1" class="input-field" min="0" placeholder="Ingrese cantidad disponible">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">💜 Medicamento 2 - Hipotensión</label>
+                            <input type="number" id="med2" class="input-field" min="0" placeholder="Ingrese cantidad disponible">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="iniciarInventario()">Iniciar Sistema</button>
+                </div>
+            </div>
+
+            <!-- REGISTRO DE PACIENTES -->
+            <div class="section hidden" id="patientSection">
+                <div class="section-header">
+                    <span class="step-indicator">2</span>
+                    <span class="section-title">Registro de Pacientes</span>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-label">Medicamento 1 Disponible</div>
+                        <div class="stat-value" id="med1Display">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Medicamento 2 Disponible</div>
+                        <div class="stat-value" id="med2Display">0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label class="input-label">📊 Presión Sistólica</label>
+                            <input type="number" id="sistolica" class="input-field" placeholder="Valor en mmHg">
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label">📊 Presión Diastólica</label>
+                            <input type="number" id="diastolica" class="input-field" placeholder="Valor en mmHg">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="agregarPaciente()">Registrar Paciente</button>
+                        <button class="btn btn-secondary" onclick="finalizarAtencion()">Finalizar Atención</button>
+                    </div>
+                </div>
+
+                <div id="alertContainer"></div>
+
+                <div class="patients-section">
+                    <div class="patients-list" id="patientList">
+                        <div class="empty-state">
+                            <div class="empty-icon">🏥</div>
+                            <div class="empty-text">No hay pacientes registrados aún</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESULTADOS FINALES -->
+            <div class="section hidden" id="resultsSection">
+                <div class="section-header">
+                    <span class="step-indicator">3</span>
+                    <span class="section-title">Resumen de Atención</span>
+                </div>
+                <div class="card">
+                    <div class="results-grid" id="resultsContainer"></div>
+                    <div style="margin-top: 24px;">
+                        <button class="btn btn-primary" onclick="reiniciar()">Iniciar Nuevo Proceso</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let inventarioMed1 = 0;
+        let inventarioMed2 = 0;
+        let pacientesAtendidos = 0;
+        let pacientesMed1 = 0;
+        let pacientesMed2 = 0;
+        let pacientes = [];
+        let sistemaActivo = false;
+
+        function iniciarInventario() {
+            const med1Input = document.getElementById('med1');
+            const med2Input = document.getElementById('med2');
+            
+            const med1 = parseInt(med1Input.value);
+            const med2 = parseInt(med2Input.value);
+
+            if (isNaN(med1) || isNaN(med2) || med1 < 0 || med2 < 0) {
+                alert('Por favor ingrese valores válidos para ambos medicamentos');
+                return;
+            }
+
+            inventarioMed1 = med1;
+            inventarioMed2 = med2;
+            sistemaActivo = true;
+
+            document.getElementById('inventorySection').classList.add('hidden');
+            document.getElementById('patientSection').classList.remove('hidden');
+            
+            actualizarInventario();
+        }
+
+        function actualizarInventario() {
+            document.getElementById('med1Display').textContent = inventarioMed1;
+            document.getElementById('med2Display').textContent = inventarioMed2;
+        }
+
+        function determinarCategoria(sistolica, diastolica) {
+            if (sistolica < 69 && diastolica < 48) {
+                return { categoria: 'Hipotensión', medicamento: 2, dosis: 6, valido: true };
+            }
+            if (sistolica >= 69 && sistolica < 98 && diastolica >= 48 && diastolica < 66) {
+                return { categoria: 'Óptima', medicamento: 0, dosis: 0, valido: true };
+            }
+            if (sistolica >= 98 && sistolica < 143 && diastolica >= 66 && diastolica < 92) {
+                return { categoria: 'Común', medicamento: 0, dosis: 0, valido: true };
+            }
+            if (sistolica >= 143 && sistolica < 177 && diastolica >= 92 && diastolica < 124) {
+                return { categoria: 'Pre HTA', medicamento: 1, dosis: 6, valido: true };
+            }
+            if (sistolica >= 177 && sistolica < 198 && diastolica >= 124 && diastolica < 142) {
+                return { categoria: 'HTA G1', medicamento: 1, dosis: 10, valido: true };
+            }
+            if (sistolica >= 198 && sistolica < 246 && diastolica >= 142 && diastolica < 169) {
+                return { categoria: 'HTA G2', medicamento: 1, dosis: 18, valido: true };
+            }
+            if (sistolica >= 246 && diastolica >= 169) {
+                return { categoria: 'HTA G3', medicamento: 1, dosis: 35, valido: true };
+            }
+            if (sistolica >= 162 && diastolica < 86) {
+                return { categoria: 'HTA SS', medicamento: 1, dosis: 17, valido: true };
+            }
+            
+            return { categoria: 'Sin categoría', medicamento: 0, dosis: 0, valido: false };
+        }
+
+        function agregarPaciente() {
+            if (!sistemaActivo) return;
+
+            const sistolicaInput = document.getElementById('sistolica');
+            const diastolicaInput = document.getElementById('diastolica');
+            
+            const sistolica = parseInt(sistolicaInput.value);
+            const diastolica = parseInt(diastolicaInput.value);
+
+            if (isNaN(sistolica) || isNaN(diastolica)) {
+                mostrarAlerta('⚠️ Por favor ingrese valores válidos de presión arterial', 'warning');
+                return;
+            }
+
+            const resultado = determinarCategoria(sistolica, diastolica);
+            
+            if (!resultado.valido) {
+                const alertHTML = `
+                    <strong>⚠️ Valores Fuera de Rango</strong><br>
+                    La combinación de presiones no corresponde a ninguna categoría válida.<br>
+                    <strong>Sistólica:</strong> ${sistolica} mmHg | <strong>Diastólica:</strong> ${diastolica} mmHg
+                `;
+                document.getElementById('alertContainer').innerHTML = `<div class="alert alert-danger">${alertHTML}</div>`;
+                
+                pacientesAtendidos++;
+                
+                pacientes.push({
+                    numero: pacientesAtendidos,
+                    sistolica,
+                    diastolica,
+                    categoria: resultado.categoria,
+                    medicamento: 0,
+                    dosis: 0,
+                    entregado: false,
+                    mensaje: 'No se entrega medicamento - Fuera de rango'
+                });
+
+                actualizarListaPacientes();
+                sistolicaInput.value = '';
+                diastolicaInput.value = '';
+                sistolicaInput.focus();
+                return;
+            }
+
+            let entregado = false;
+            let mensaje = '';
+
+            if (resultado.medicamento === 1 && inventarioMed1 >= resultado.dosis) {
+                inventarioMed1 -= resultado.dosis;
+                pacientesMed1++;
+                entregado = true;
+                mensaje = `✅ Entregado: ${resultado.dosis} dosis de Medicamento 1`;
+            } else if (resultado.medicamento === 2 && inventarioMed2 >= resultado.dosis) {
+                inventarioMed2 -= resultado.dosis;
+                pacientesMed2++;
+                entregado = true;
+                mensaje = `✅ Entregado: ${resultado.dosis} dosis de Medicamento 2`;
+            } else if (resultado.medicamento === 0) {
+                entregado = true;
+                mensaje = '✅ No requiere tratamiento medicamentoso';
+            } else if (resultado.medicamento > 0) {
+                mensaje = '❌ Inventario insuficiente';
+            }
+
+            pacientesAtendidos++;
+            
+            pacientes.push({
+                numero: pacientesAtendidos,
+                sistolica,
+                diastolica,
+                categoria: resultado.categoria,
+                medicamento: resultado.medicamento,
+                dosis: resultado.dosis,
+                entregado,
+                mensaje
+            });
+
+            actualizarListaPacientes();
+            actualizarInventario();
+
+            sistolicaInput.value = '';
+            diastolicaInput.value = '';
+            sistolicaInput.focus();
+
+            if ((resultado.medicamento === 1 && inventarioMed1 < 6) || 
+                (resultado.medicamento === 2 && inventarioMed2 < 6)) {
+                mostrarAlerta('⚠️ Advertencia: Inventario bajo de medicamento', 'warning');
+            }
+
+            if (inventarioMed1 === 0 || inventarioMed2 === 0) {
+                setTimeout(() => {
+                    sistemaActivo = false;
+                    mostrarAlerta('🛑 Sistema detenido: Existencias agotadas', 'info');
+                    finalizarAtencion();
+                }, 500);
+            }
+        }
+
+        function actualizarListaPacientes() {
+            const lista = document.getElementById('patientList');
+            
+            if (pacientes.length === 0) {
+                lista.innerHTML = '<div class="empty-state"><div class="empty-icon">🏥</div><div class="empty-text">No hay pacientes registrados aún</div></div>';
+                return;
+            }
+
+            let html = '';
+            pacientes.forEach(p => {
+                let badgeClass = '';
+                if (p.categoria === 'Hipotensión') badgeClass = 'badge-hipotension';
+                else if (p.categoria === 'Óptima' || p.categoria === 'Común') badgeClass = 'badge-normal';
+                else if (p.categoria === 'Pre HTA') badgeClass = 'badge-pre-hta';
+                else badgeClass = 'badge-hta';
+
+                html += `
+                    <div class="patient-card">
+                        <div class="patient-info">
+                            <div class="patient-id">Paciente #${p.numero}</div>
+                            <div class="patient-readings">Sistólica: ${p.sistolica} mmHg | Diastólica: ${p.diastolica} mmHg</div>
+                            <div class="patient-message">${p.mensaje}</div>
+                        </div>
+                        <span class="badge ${badgeClass}">${p.categoria}</span>
+                    </div>
+                `;
+            });
+
+            lista.innerHTML = html;
+            lista.scrollTop = lista.scrollHeight;
+        }
+
+        function mostrarAlerta(mensaje, tipo) {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = `<div class="alert alert-${tipo}">${mensaje}</div>`;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 3500);
+        }
+
+        function finalizarAtencion() {
+            sistemaActivo = false;
+            
+            document.getElementById('patientSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+            
+            const porcentajeMed1 = pacientesAtendidos > 0 ? 
+                ((pacientesMed1 / pacientesAtendidos) * 100).toFixed(1) : '0.0';
+            const porcentajeMed2 = pacientesAtendidos > 0 ? 
+                ((pacientesMed2 / pacientesAtendidos) * 100).toFixed(1) : '0.0';
+
+            const resultsHTML = `
+                <div class="result-card">
+                    <span class="result-label">Total de pacientes atendidos</span>
+                    <span class="result-value">${pacientesAtendidos}</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Pacientes con Medicamento 1</span>
+                    <span class="result-value">${pacientesMed1} (${porcentajeMed1}%)</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Pacientes con Medicamento 2</span>
+                    <span class="result-value">${pacientesMed2} (${porcentajeMed2}%)</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Medicamento 1 restante</span>
+                    <span class="result-value">${inventarioMed1}</span>
+                </div>
+                <div class="result-card">
+                    <span class="result-label">Medicamento 2 restante</span>
+                    <span class="result-value">${inventarioMed2}</span>
+                </div>
+            `;
+
+            document.getElementById('resultsContainer').innerHTML = resultsHTML;
+        }
+
+        function reiniciar() {
+            inventarioMed1 = 0;
+            inventarioMed2 = 0;
+            pacientesAtendidos = 0;
+            pacientesMed1 = 0;
+            pacientesMed2 = 0;
+            pacientes = [];
+            sistemaActivo = false;
+
+            document.getElementById('med1').value = '';
+            document.getElementById('med2').value = '';
+            document.getElementById('sistolica').value = '';
+            document.getElementById('diastolica').value = '';
+
+            document.getElementById('resultsSection').classList.add('hidden');
+            document.getElementById('patientSection').classList.add('hidden');
+            document.getElementById('inventorySection').classList.remove('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('diastolica').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && sistemaActivo) {
+                    agregarPaciente();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
